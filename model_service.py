@@ -16,6 +16,8 @@ class PatchCoreService:
 
     def load(self):
         if self.model is None:
+            from runtime_compat import preserve_lazy_stubs
+            preserve_lazy_stubs()
             import torch
             from anomalib.models import Patchcore
             torch.set_num_threads(4)

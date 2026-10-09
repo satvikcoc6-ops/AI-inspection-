@@ -44,3 +44,7 @@ Verified through the Codex browser against the running local FastAPI server:
 The sample PDF was rendered with Poppler and visually reviewed: one page, legible text, correct metadata, both images visible, no clipping or overlapping content. `output/dashboard-preview.jpg` records the inspected dashboard; `output/pdf/sample-inspection-report.pdf` is the reviewed example report.
 
 No full training dataset was supplied; dataset-wide metrics were not re-evaluated. YOLO and GenAI are extension contracts only. The requested ponytail skill was not available.
+# Cloud deployment verification
+
+The expanded suite passed 12 tests in 16.09 seconds: the same real PatchCore, PDF, ZIP, history, invalid-upload, oversized-upload, and failure cases run against both local SQLite and a simulated private Blob SDK boundary. This verifies adapter behavior; actual cloud connectivity requires a deployed end-to-end run. `pip check` and Python/JavaScript syntax checks passed.
+

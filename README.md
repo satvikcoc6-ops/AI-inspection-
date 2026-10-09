@@ -56,6 +56,14 @@ The scratch sample is a documented model miss. Use it to explain the need for hu
 
 History and generated files stay on the local disk. Back up `data/` to retain inspections. The history API displays the most recent 500 records; CSV exports that same window. The first prediction includes model import/load time and takes longer than later runs.
 
+## Vercel deployment
+
+Deploy the repository root with the FastAPI preset and Python 3.12. `uv.toml` selects CPU PyTorch from the official wheel index. Enable `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` for the approximately 1.4 GB dependency bundle.
+
+Connect a **private Vercel Blob store** to Production and Preview, enabling the read-write-token environment variable for the Python SDK. Vercel injects `BLOB_READ_WRITE_TOKEN`; never commit its value. When `VERCEL` is set, the app writes artifacts and immutable history records to Blob, using `/tmp` only during generation. It never substitutes temporary SQLite history for cloud storage failures.
+
+The cloud dashboard is a shared hackathon demo: visitors can see inspection history and download results. The page states this before upload. Cloud uploads are limited to 4 MB to stay below Vercel's multipart request limit; local uploads support 12 MB. Downloads stream generated files. No YOLO or GenAI inference is claimed.
+
 ## Validation
 
 ```powershell
