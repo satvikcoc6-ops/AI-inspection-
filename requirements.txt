@@ -1,0 +1,9 @@
+torch==2.6.0
+torchvision==0.21.0
+anomalib==2.6.0
+fastapi==0.143.0
+uvicorn==0.54.0
+python-multipart==0.0.32
+reportlab==5.0.1
+numpy==2.5.2
+Pillow==12.3.0

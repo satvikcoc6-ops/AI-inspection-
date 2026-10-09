@@ -1,0 +1,9 @@
+{
+  "image": "mdm_defect_model/examples/scratch.png",
+  "status": "No anomaly detected",
+  "normalized_anomaly_score": 0.47052061557769775,
+  "score_is_probability": false,
+  "defect_type": "Not classified",
+  "scope": "MVTec-style metal-nut images only",
+  "note": "Experimental baseline; not validated for automotive acceptance decisions."
+}

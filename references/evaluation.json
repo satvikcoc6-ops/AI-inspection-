@@ -1,0 +1,23 @@
+{
+  "dataset": "MVTec AD metal_nut",
+  "license": "CC BY-NC-SA 4.0",
+  "method": "PatchCore, pretrained ResNet18, layer2+layer3, 1% coreset",
+  "seed": 42,
+  "validation": "25% of original test split; remaining 75% held out",
+  "benchmark_note": "Custom validation/test split, not the full official benchmark",
+  "task": "normal versus anomaly with heatmap; no defect-type classifier",
+  "automotive_validation": false,
+  "test_results": [
+    {
+      "image_AUROC": 0.9831932783126831,
+      "image_F1Score": 0.9640287756919861,
+      "pixel_AUROC": 0.9824669361114502,
+      "pixel_F1Score": 0.8137897849082947
+    }
+  ],
+  "torch": "2.14.1+cu130",
+  "python": "3.12.14",
+  "train_images": 220,
+  "validation_images": 28,
+  "test_images": 87
+}

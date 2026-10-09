@@ -1,0 +1,21 @@
+{
+  "README.md": "49744778e944b483423e028e7e351ba42443e5fda6c458a52cb01ccecbda4fb2",
+  "requirements.txt": "106d710ce371f1a7e2c0069ca3cab8f9126791da38abf69c3a55febbde3331b9",
+  "train.py": "d2f84645191d2c36437668b507684f9ec445ddf27bd4fb7190990a6e11fa1280",
+  "predict.py": "20e4956ac19395da7d6966a6015ef9a6f99bab08cf7e73f10f8a14eb649ef308",
+  "evaluation.json": "7f10e6349b6e8003d1b918feb605b73e69a32b2ad4674a7df35a50998af7b9b5",
+  "train_manifest.csv": "edc1db02de0801d5c00ad6dbbad8e1c703601462f25914f48e6598610dc2929f",
+  "validation_manifest.csv": "33699f553cb7a9d47c56e35fbe9e1a9e0404f060f19b6ed440043b4a735a702b",
+  "test_manifest.csv": "3b191734ea290348415bb19f7c294e78b2d6da2b2dcfab6076eb919c621a6c90",
+  "metal_nut_patchcore.ckpt": "b8c3610043814be7ef0cc2bdf49556414ba6dbd13765cfa98e7c5b8861ea6aba",
+  "Try_Model_in_Colab.ipynb": "41c598b31cf19a4eb6bba9ec65ac4ee6b7d6e268647035ce9cab4755d6e07b44",
+  "examples/bent.png": "602cceb099d5aa10a416f31cd6370ef9d8c810118f4ada9dbc9c28e91a889e0b",
+  "examples/good.png": "d521ac790c921c26e635de69bab126d290def0c6674b961b4cb359a0bd8b8b01",
+  "examples/scratch.png": "1e5637c3409d05709eae62c7254f38900afa296902b1626e5902a5a2a4095f3d",
+  "examples/scratch_result/heatmap_overlay.png": "776cfdedd2924cd12ef61710734210577d76a4639f86a8f2d69c0e46ec887bbc",
+  "examples/scratch_result/result.json": "0a352507bf222b93593bc3b740b38a75a07235dee491c1f3e61d4574a3527abb",
+  "examples/good_result/heatmap_overlay.png": "08604677206b30e691ff918983b5f6ed1a6a1da5e59f60185beb16563059bba8",
+  "examples/good_result/result.json": "d4e2a0445d17ff7fb42b4bba8ca725d29826d4356ecfe4d38ef607a61f3fa70a",
+  "examples/bent_result/heatmap_overlay.png": "1e34c5766fe3ee25ac358584bb71ebe1ca2188cad634eef7b84005ae4b28fafd",
+  "examples/bent_result/result.json": "6ba54e035a0510b70a185cee8b0d1d0ae6b26692543260b59bc5f28d08d1640f"
+}
