@@ -19,7 +19,7 @@ from model_service import service, CHECKPOINT
 from reports import make_report
 
 ROOT = Path(__file__).resolve().parent
-DATA = Path(os.environ.get('AUTOINSPECT_DATA', str(ROOT/'data')))
+DATA = Path(os.environ.get('AUTOINSPECT_DATA', '/tmp/autoinspect' if os.environ.get('VERCEL') else str(ROOT/'data')))
 DATA.mkdir(parents=True, exist_ok=True)
 Image.MAX_IMAGE_PIXELS = 20_000_000
 app = FastAPI(title='AutoInspect AI Pro', docs_url='/api/docs')

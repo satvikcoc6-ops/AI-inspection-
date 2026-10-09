@@ -1,0 +1,12 @@
+.venv/
+PortableGit/
+data/
+tmp/
+output/
+tests/
+tools/
+__pycache__/
+.pytest_cache/
+references/examples/*_result/
+references/*.ipynb
+references/train*
