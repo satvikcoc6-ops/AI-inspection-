@@ -1,3 +1,7 @@
 # Both indexes are official; PyTorch also mirrors older unrelated packages.
 # Resolve the pinned CPU wheels there and other dependencies from PyPI.
 index-strategy = "unsafe-best-match"
+
+[[index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
