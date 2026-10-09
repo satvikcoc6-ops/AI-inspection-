@@ -9,9 +9,28 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import app as api
 
 
-@pytest.fixture
-def client(tmp_path,monkeypatch):
+@pytest.fixture(params=['local', 'cloud'])
+def client(tmp_path,monkeypatch,request):
     monkeypatch.setattr(api,'DATA',tmp_path)
+    if request.param == 'cloud':
+        from types import SimpleNamespace
+        objects = {}
+        monkeypatch.setenv('VERCEL', '1')
+        monkeypatch.setenv('BLOB_READ_WRITE_TOKEN', 'test-placeholder')
+        def put(path, body, **kwargs):
+            assert kwargs['access'] == 'private'
+            objects[path] = body
+        def get(path, **kwargs):
+            assert kwargs['access'] == 'private'
+            if path not in objects:
+                raise api.cloud_storage.blob.BlobNotFoundError()
+            return SimpleNamespace(content=objects[path])
+        monkeypatch.setattr(api.cloud_storage.blob, 'put', put)
+        monkeypatch.setattr(api.cloud_storage.blob, 'get', get)
+        monkeypatch.setattr(api.cloud_storage.blob, 'list_objects',
+                            lambda **kw: SimpleNamespace(blobs=[SimpleNamespace(pathname=p) for p in sorted(objects) if p.startswith(kw['prefix'])][:kw['limit']]))
+    else:
+        monkeypatch.delenv('VERCEL', raising=False)
     return TestClient(api.app)
 
 

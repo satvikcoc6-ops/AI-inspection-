@@ -4,9 +4,10 @@ import zipfile
 
 root=Path(__file__).resolve().parents[1]
 destination=root/'output'/'AutoInspect_Hackathon.zip'
-files=['app.py','model_service.py','reports.py','integrations.py','predict.py',
+files=['app.py','cloud_storage.py','model_service.py','reports.py','integrations.py','predict.py',
        'requirements.txt','requirements-lock.txt','README.md','VALIDATION.md',
-       'setup.ps1','START_DASHBOARD.cmd','.gitignore']
+       'setup.ps1','START_DASHBOARD.cmd','OPEN_GIT.cmd','.gitignore',
+       '.python-version','.vercelignore','vercel.json','uv.toml']
 with zipfile.ZipFile(destination,'w',zipfile.ZIP_DEFLATED) as archive:
     for name in files:
         archive.write(root/name,'AutoInspect_AI_Pro/'+name)

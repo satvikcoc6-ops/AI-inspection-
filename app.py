@@ -9,14 +9,17 @@ import sqlite3
 import time
 import uuid
 import zipfile
+import shutil
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError
 from model_service import service, CHECKPOINT
 from reports import make_report
+import cloud_storage
+import mimetypes
 
 ROOT = Path(__file__).resolve().parent
 DATA = Path(os.environ.get('AUTOINSPECT_DATA', '/tmp/autoinspect' if os.environ.get('VERCEL') else str(ROOT/'data')))
@@ -40,11 +43,14 @@ def home():
 @app.get('/api/health')
 def health():
     return {'checkpoint_available': CHECKPOINT.is_file(), 'model_loaded': service.model is not None,
+            'cloud': cloud_storage.enabled(), 'max_upload_mb': 4 if cloud_storage.enabled() else 12,
             'model': service.name, 'device': 'CPU', 'integrations': {'yolo': 'planned', 'genai': 'planned'}}
 
 
 @app.get('/api/history')
 def history():
+    if cloud_storage.enabled():
+        return cloud_storage.history()
     with connect() as con:
         rows = con.execute('SELECT result FROM inspections ORDER BY created_at DESC LIMIT 500').fetchall()
     return [json.loads(row[0]) for row in rows]
@@ -72,9 +78,10 @@ def example(name: str):
 
 @app.post('/api/inspect')
 def inspect(image: UploadFile = File(...)):
-    content=image.file.read(12*1024*1024+1)
-    if len(content)>12*1024*1024:
-        raise HTTPException(413,'Image must be smaller than 12 MB.')
+    max_mb = 4 if cloud_storage.enabled() else 12
+    content=image.file.read(max_mb*1024*1024+1)
+    if len(content)>max_mb*1024*1024:
+        raise HTTPException(413,f'Image must be smaller than {max_mb} MB.')
     try:
         with Image.open(io.BytesIO(content)) as opened:
             if opened.width*opened.height>20_000_000:
@@ -102,12 +109,18 @@ def inspect(image: UploadFile = File(...)):
         with zipfile.ZipFile(folder/'results.zip','w',zipfile.ZIP_DEFLATED) as archive:
             for name in ('input.png','heatmap.png','anomaly_map.npy','result.json','report.pdf'):
                 archive.write(folder/name,name)
-        with connect() as con:
-            con.execute('INSERT INTO inspections VALUES (?,?,?)',(run_id,result['created_at'],json.dumps(result)))
+        if cloud_storage.enabled():
+            cloud_storage.save(folder, result)
+        else:
+            with connect() as con:
+                con.execute('INSERT INTO inspections VALUES (?,?,?)',(run_id,result['created_at'],json.dumps(result)))
         return result
     except Exception:
         logging.exception('Inspection failed')
         raise HTTPException(503,'The model could not finish this inspection. Check the server log and run tools/doctor.py.')
+    finally:
+        if cloud_storage.enabled() and folder.exists():
+            shutil.rmtree(folder)
 
 
 @app.get('/api/inspections/{run_id}/{asset}')
@@ -116,6 +129,18 @@ def download(run_id: str, asset: str):
         raise HTTPException(404,'Inspection not found')
     if asset not in {'input.png','heatmap.png','result.json','report.pdf','results.zip','anomaly_map.npy'}:
         raise HTTPException(404,'Unknown asset')
+    if cloud_storage.enabled():
+        from vercel.blob import BlobNotFoundError
+        try:
+            content = cloud_storage.read(f'inspections/{run_id}/{asset}')
+        except BlobNotFoundError:
+            raise HTTPException(404,'Result not found')
+        headers = {'X-Content-Type-Options': 'nosniff'}
+        if asset not in {'input.png','heatmap.png'}:
+            headers['Content-Disposition'] = f'attachment; filename="{run_id[:8]}-{asset}"'
+        # Streaming also supports generated reports larger than the body limit.
+        return StreamingResponse((content[i:i+65536] for i in range(0,len(content),65536)),
+                                 media_type=mimetypes.guess_type(asset)[0] or 'application/octet-stream',headers=headers)
     path=DATA/run_id/asset
     if not path.is_file():
         raise HTTPException(404,'Result not found')
