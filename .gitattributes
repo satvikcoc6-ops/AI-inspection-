@@ -1,0 +1,8 @@
+* text=auto
+*.pdf binary
+*.ckpt binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.npy binary
